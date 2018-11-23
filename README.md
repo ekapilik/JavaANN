@@ -1,8 +1,8 @@
 # JavaANN
 School Project - COMP3190 - Introduction to Artificial Intelligence
-
 University of Manitoba
-Eric Kapilik
+
+Author: Eric Kapilik
 ======================
 
 Assignment 4
