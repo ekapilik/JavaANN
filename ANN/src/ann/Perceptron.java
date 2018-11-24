@@ -14,16 +14,21 @@ import java.util.ArrayList;
  * @author Eric Kapilik
  */
 public class Perceptron {
+	public enum roles {INPUT, HIDDEN, OUTPUT};
+
 	private ArrayList<Double> weights;
 	private Double activation = 0.0;
 	private Double bias;
+	private double net;
+	private roles role;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param numInputs  number of inputs (not including bias term)
 	 */
-	public Perceptron(int numInputs){
+	public Perceptron(int numInputs, roles role){
+		this.role = role;
 		weights = new ArrayList<Double>();
 		//initialize random weight values
 		for(int i = 0; i < numInputs; i++){//for each input
@@ -32,35 +37,32 @@ public class Perceptron {
 		bias = Math.random();
 	}
 
-	public void forwardFeed(Boolean[] inputs) throws Exception{
+	public void forwardFeed(double[] inputs) throws Exception{
 		if(inputs.length != weights.size()){
 			throw new Exception("Incorrect number of inputs. Expected: " + weights.size());
 		}
-
+		//sum of weights times activations
 		double sum = 0;
 		for (int i = 0; i < inputs.length; i++){
-			if(inputs[i]){
-				sum += weights.get(i);
-			}
+			sum += weights.get(i) * inputs[i];
 		}
 
-		activation = activationFunction(sum);
+		this.net = sum + bias;
+		this.activation = activationFunction(this.net);
 	}//end forwardFeed
-
-	public void setActivation(boolean input){
-		if(input){
-			activation = 1.0;
-		}
-		else{
-			activation = 0.0;
-		}
-	}
 
 	public double activationFunction(double z){
 		//sigmoid function
 		return 1/(1 + (Math.pow(Math.E, -z)));
 	}
-	public boolean isActivated(){
-		return activation > bias;
+
+	public double getActivation(){
+		return activation;
+	}
+
+	void setActivation(double d) {
+		if(role == roles.INPUT){
+			activation = d;
+		}
 	}
 }

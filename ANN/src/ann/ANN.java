@@ -34,6 +34,7 @@ public class ANN {
 				break;
 			case 2:
 				System.out.println("Training the model...");
+				network.train();
 				break;
 		}
 	}
@@ -46,9 +47,12 @@ public class ANN {
 						{{1,1},{1}} };
 		network = new Network(0.07, 1000000, new int[] {2,3,3,1});
 		System.out.println(network + "\n");
-		Boolean[] test = new Boolean[] {false, true};
-		network.ForwardPropogation(test);
+		double[] test_inputs = new double[] {0.0, 1.0};
+		double[] test_output = new double[] {1.0};
+
+		network.forwardPropogation(test_inputs);
 		System.out.println(network + "\n");
+		network.backPropogation(test_output);
 	}
 	
 }

@@ -18,17 +18,19 @@ public class Network {
 	private double learningRate;
 	private int numIterations;
 
-	//perceptron per layer (not including biases)
-	private int[] configuration;
-
 	private Layer input;
 	private ArrayList<Layer> hidden;
 	private Layer output;
 
-	public Network(double learningRate, int numIterations, int[] configuration){
+	/**
+	 * constructor 
+	 * @param learningRate size of step to take
+	 * @param maxIterations maximum number of iterations to run in training
+	 * @param configuration network configuration (left to right) includes input, output, does not include bias terms
+	 */
+	public Network(double learningRate, int maxIterations, int[] configuration){
 		this.learningRate = learningRate;
-		this.numIterations = numIterations;
-		this.configuration = configuration;
+		this.numIterations = maxIterations;
 
 		//layers[0] is raw data input
 		input = new Layer(configuration[0]);
@@ -38,15 +40,15 @@ public class Network {
 		int i = 1;
 		for(; i < configuration.length - 1; i++){
 			if(i == 1){
-				hidden.add(new Layer(configuration[i], input));
+				hidden.add(new Layer(configuration[i], input, Perceptron.roles.HIDDEN));
 			}
 			else{
-				hidden.add(new Layer(configuration[i], hidden.get(i - 2)));
+				hidden.add(new Layer(configuration[i], hidden.get(i - 2), Perceptron.roles.HIDDEN));
 			}
 		}
 
 		//layers[n] is output layer
-		output = new Layer(configuration[i], hidden.get(i - 2));
+		output = new Layer(configuration[i], hidden.get(i - 2), Perceptron.roles.OUTPUT);
 	}
 
 	public String toString(){
@@ -66,11 +68,18 @@ public class Network {
 		return result;
 	}
 
-	public void ForwardPropogation(Boolean[] inputs){
+	void train() {
+	}
+
+	public void forwardPropogation(double[] inputs){
 		input.inputFeed(inputs);
 		for(Layer l : hidden){
 			l.forwardFeed();
 		}
 		output.forwardFeed();
+	}
+
+	void backPropogation(double[] output) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }
