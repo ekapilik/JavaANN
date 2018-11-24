@@ -50,7 +50,8 @@ public class Network {
 	}
 
 	public String toString(){
-		String result = "INPUT: ";
+		String result = "[learningRate: " + learningRate + ", numIterations: " + numIterations + "]";
+		result += "\nINPUT:     ";
 		result += input.toString();
 
 
@@ -59,11 +60,17 @@ public class Network {
 			result += hidden.get(i).toString();
 		}
 
-		result += "\nOUTPUT: ";
+		result += "\nOUTPUT:    ";
 		result += output.toString();
 
 		return result;
 	}
 
-	
+	public void ForwardPropogation(Boolean[] inputs){
+		input.inputFeed(inputs);
+		for(Layer l : hidden){
+			l.forwardFeed();
+		}
+		output.forwardFeed();
+	}
 }

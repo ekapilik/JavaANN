@@ -2,6 +2,8 @@ package ann;
 
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +17,6 @@ import java.util.ArrayList;
  */
 public class Layer {
 	private ArrayList<Perceptron> perceptrons;
-	private double bias;
 	private Layer previousLayer;
 
 	Layer(int numberOfPerceptrons) {
@@ -24,7 +25,6 @@ public class Layer {
 			perceptrons.add(new Perceptron(1));
 		}
 
-		bias = Math.random();
 	}
 
 	Layer(int numberOfPerceptrons, Layer previousLayer){
@@ -35,7 +35,6 @@ public class Layer {
 
 		this.previousLayer = previousLayer;
 
-		bias = Math.random();
 	}
 	
 	public int getNumPerceptrons(){ return perceptrons.size(); }
@@ -44,8 +43,35 @@ public class Layer {
 	public String toString(){
 		String result = "";
 		for(Perceptron p : perceptrons){
-			result += p.getActivation() + "\t";
+			result += (p.isActivated()?1:0) + " ";
 		}
 		return result;
+	}
+
+	void inputFeed(Boolean[] input){
+		for(int i = 0; i < perceptrons.size(); i++){
+			((Perceptron)perceptrons.get(i)).setActivation(input[i]);
+		}
+	}
+
+
+	void forwardFeed() {
+		Boolean[] inputs = previousLayer.getActivations();
+		for(Perceptron p : perceptrons){
+			try {
+				p.forwardFeed(inputs);
+			} catch (Exception ex) {
+				Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+	}
+
+	public Boolean[] getActivations() {
+		int n = perceptrons.size();
+		Boolean[] activations = new Boolean[n];
+		for(int i = 0; i < n; i++){
+			activations[i] = perceptrons.get(i).isActivated();
+		}
+		return activations;
 	}
 }

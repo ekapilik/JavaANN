@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class Perceptron {
 	private ArrayList<Double> weights;
 	private Double activation = 0.0;
+	private Double bias;
 
 	/**
 	 * Constructor
@@ -25,9 +26,10 @@ public class Perceptron {
 	public Perceptron(int numInputs){
 		weights = new ArrayList<Double>();
 		//initialize random weight values
-		for(int i = 0; i < weights.size(); i++){//for each input
+		for(int i = 0; i < numInputs; i++){//for each input
 			weights.add(Math.random());
 		}//end for
+		bias = Math.random();
 	}
 
 	public void forwardFeed(Boolean[] inputs) throws Exception{
@@ -45,13 +47,20 @@ public class Perceptron {
 		activation = activationFunction(sum);
 	}//end forwardFeed
 
+	public void setActivation(boolean input){
+		if(input){
+			activation = 1.0;
+		}
+		else{
+			activation = 0.0;
+		}
+	}
+
 	public double activationFunction(double z){
 		//sigmoid function
 		return 1/(1 + (Math.pow(Math.E, -z)));
 	}
-
-	public double getActivation(){
-		return activation;
+	public boolean isActivated(){
+		return activation > bias;
 	}
-
 }

@@ -45,7 +45,10 @@ public class ANN {
 						{{1,0},{0}}, 
 						{{1,1},{1}} };
 		network = new Network(0.07, 1000000, new int[] {2,3,3,1});
-		System.out.println(network);
+		System.out.println(network + "\n");
+		Boolean[] test = new Boolean[] {false, true};
+		network.ForwardPropogation(test);
+		System.out.println(network + "\n");
 	}
 	
 }
