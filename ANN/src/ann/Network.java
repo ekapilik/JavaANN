@@ -52,7 +52,7 @@ public class Network {
 	}
 
 	public String toString(){
-		String result = "[learningRate: " + learningRate + ", numIterations: " + numIterations + "]";
+		String result = "[learningRate: " + learningRate + ", maxIterations: " + numIterations + "]";
 		result += "\nINPUT:     ";
 		result += input.toString();
 
@@ -68,7 +68,16 @@ public class Network {
 		return result;
 	}
 
-	void train() {
+	void train(double[][][] trainingData) {
+		//ArrayList<Double> errorPerIteration = new ArrayList<Double>();
+		//for (int i = 0; i < maxIterations; i++){	
+			//shuffle data rows
+			//foreach training row
+				//forwardPropogation()
+				//errorPerIteration += backPropogation();
+		//}
+		//graph errorPerIteration
+		//http://www.jfree.org/jfreechart/
 	}
 
 	public void forwardPropogation(double[] inputs){
@@ -79,7 +88,29 @@ public class Network {
 		output.forwardFeed();
 	}
 
-	void backPropogation(double[] output) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public double backPropogation(double[] outputValues) {
+		//ERROR
+		//calculate total error
+			//foreach output perceptron
+		//will return total error for analysis
+		double totalError = 0.0;
+
+
+		//OUTPUT LAYER
+		//calculate delta foreach output perceptron
+		this.output.calculateDeltaTerm(outputValues);
+
+		//calculate and STORE (do not update) weights for each perceptron
+		this.output.calculateWeightUpdates();
+
+		//HIDDEN LAYER
+		//calculate delta foreach hidden layer perceptron
+			//calculate ...
+			//calculate ...
+		//calculate and STORE (do not update) weights for each perceptron
+		
+		//update output weights
+		//update hidden weights
+		return totalError;
 	}
 }

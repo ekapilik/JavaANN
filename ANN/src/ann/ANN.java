@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @author Eric Kapilik
  */
 public class ANN {
-	static int[][][] trainingData;
+	static double[][][] trainingData;
 	static Network network;
 	/**
 	 * Driver for ANN (running, training)
@@ -34,18 +34,20 @@ public class ANN {
 				break;
 			case 2:
 				System.out.println("Training the model...");
-				network.train();
+				network.train(trainingData);
 				break;
 		}
 	}
 
 	private static void init() {
 		//simple logical AND truth table
-		trainingData = new int[][][] {	{{0,0},{0}}, 
-						{{0,1},{0}},
-						{{1,0},{0}}, 
-						{{1,1},{1}} };
-		network = new Network(0.07, 1000000, new int[] {2,3,3,1});
+		trainingData = new double[][][] {{{0.0,0.0},{0.0}}, 
+						 {{0.0,1.0},{0.0}},
+						 {{1.0,0.0},{0.0}}, 
+						 {{1.0,1.0},{1.0}} };
+
+
+		network = new Network(0.07, 1000, new int[] {2,3,1});
 		System.out.println(network + "\n");
 		double[] test_inputs = new double[] {0.0, 1.0};
 		double[] test_output = new double[] {1.0};

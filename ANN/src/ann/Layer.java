@@ -75,4 +75,22 @@ public class Layer {
 		}
 		return activations;
 	}
+
+	public void calculateDeltaTerm(double[] targetOutputs){
+		if(role == Perceptron.roles.OUTPUT){
+			int  i = 0;
+			for(Perceptron p : perceptrons){
+				p.calculateDeltaTerm(targetOutputs[i++]);
+			}
+		}
+	}
+
+	void calculateWeightUpdates() {
+		if(role == Perceptron.roles.OUTPUT){
+			int  i = 0;
+			for(Perceptron p :perceptrons){
+				p.calculateDeltaWeights();
+			}
+		}
+	}
 }

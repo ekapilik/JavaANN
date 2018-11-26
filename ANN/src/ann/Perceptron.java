@@ -14,13 +14,18 @@ import java.util.ArrayList;
  * @author Eric Kapilik
  */
 public class Perceptron {
+
+
 	public enum roles {INPUT, HIDDEN, OUTPUT};
 
+	private roles role;
 	private ArrayList<Double> weights;
-	private Double activation = 0.0;
+	private ArrayList<Double> inputs;
+	private ArrayList<Double> deltaWeights; //weights not updated by deltaWeights until .updateWeights() is run
+	private double delta;
+	private Double activation;
 	private Double bias;
 	private double net;
-	private roles role;
 
 	/**
 	 * Constructor
@@ -29,21 +34,31 @@ public class Perceptron {
 	 */
 	public Perceptron(int numInputs, roles role){
 		this.role = role;
+
 		weights = new ArrayList<Double>();
+		inputs = new ArrayList<Double>();
+		deltaWeights = new ArrayList<Double>();
+		activation = 0.0;
+		bias = Math.random();
+
 		//initialize random weight values
 		for(int i = 0; i < numInputs; i++){//for each input
 			weights.add(Math.random());
 		}//end for
-		bias = Math.random();
+
 	}
 
 	public void forwardFeed(double[] inputs) throws Exception{
 		if(inputs.length != weights.size()){
 			throw new Exception("Incorrect number of inputs. Expected: " + weights.size());
 		}
+
+		this.inputs = new ArrayList<Double>();
+
 		//sum of weights times activations
 		double sum = 0;
 		for (int i = 0; i < inputs.length; i++){
+			this.inputs.add(inputs[i]);
 			sum += weights.get(i) * inputs[i];
 		}
 
@@ -60,9 +75,52 @@ public class Perceptron {
 		return activation;
 	}
 
-	void setActivation(double d) {
+	public void setActivation(double d) {
 		if(role == roles.INPUT){
 			activation = d;
 		}
+	}
+
+	/**
+	 * calculate delta term for output term
+	 * @param targetOutput 
+	 */
+	public void calculateDeltaTerm(double targetOutput) {
+		if(role == roles.OUTPUT){
+			this.delta = (targetOutput - activation) * (activation) * (1 - activation);
+		}
+	}
+
+	/**
+	 * calculate the delta term for a hidden layer which depends upon layer closer to output 
+	 * @param perceptron 
+	 */
+	public void calculateDeltaTerm(Perceptron perceptron, int num){
+		if(role == roles.HIDDEN){
+			this.delta = perceptron.getDeltaTerm() * perceptron.getWeight(num) * activation * (1 - activation);
+		}
+	}
+
+	public void calculateDeltaWeights(){
+		if(role == roles.OUTPUT){
+			deltaWeights.clear();	
+			for(int i = 0; i < weights.size(); i++){
+				deltaWeights.add(delta * inputs.get(i));
+			}
+		}
+	}
+
+	public void updateWeights(){
+		for(int i = 0; i < weights.size(); i++){
+			weights.set(i, weights.get(i) - deltaWeights.get(i));
+		}
+	}
+
+	private double getWeight(int num) {
+		return weights.get(num);
+	}
+
+	public double getDeltaTerm(){
+		return this.delta;
 	}
 }
