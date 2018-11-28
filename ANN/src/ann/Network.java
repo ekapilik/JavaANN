@@ -65,29 +65,48 @@ public class Network {
 		output.forwardFeed();
 	}
 
-	public double backPropogation(double[] outputValues) {
+	public double backPropogation(double[] targetOutputs) throws Exception {
 		//ERROR
 		//calculate total error
 			//foreach output perceptron
 		//will return total error for analysis
 		double totalError = 0.0;
 
+		ArrayList<Perceptron> outputs = this.output.getPerceptrons();
+		ArrayList<Perceptron> hiddens = this.hidden.getPerceptrons();
 
+		if(targetOutputs.length != outputs.size()){
+			throw new Exception(String.format("Incorrect number of target output values. "
+				+ "Expected [%d] target values.", outputs.size()));
+		}
+
+		int i = 0;
+		double targetOutput;
 		//OUTPUT LAYER
-		//calculate delta foreach output perceptron
-		this.output.calculateDeltaTerm(outputValues);
+		for(Perceptron o : this.output.getPerceptrons()){ //output perceptrons
+			targetOutput = targetOutputs[i++];	
 
-		//calculate and STORE (do not update) weights for each perceptron
-		this.output.calculateWeightUpdates();
+			//calculate error for perceptron
+			totalError += o.getError(targetOutput);
+			//calculate delta 
+			o.calculateDeltaTerm(targetOutput);
+			//calculate and STORE (do not update) weights for each perceptron
+			o.calculateDeltaWeights();
 
-		//HIDDEN LAYER
-		//calculate delta foreach hidden layer perceptron
-			//calculate ...
-			//calculate ...
-		//calculate and STORE (do not update) weights for each perceptron
-		
-		//update output weights
-		//update hidden weights
+			int j = 0; //manage which perceptron num we are looking at
+			for(Perceptron h : hiddens){ //hidden perceptrons
+				h.calculateDeltaTerm(o, j++);
+				h.calculateDeltaWeights();
+			}
+		}
+
+		for(Perceptron o : this.output.getPerceptrons()){
+			o.updateWeights();
+		}
+		for(Perceptron h : this.output.getPerceptrons()){
+			h.updateWeights();
+		}
+
 		return totalError;
 	}
 }

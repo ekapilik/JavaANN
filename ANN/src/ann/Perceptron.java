@@ -93,25 +93,32 @@ public class Perceptron {
 	 * calculate the delta term for a hidden layer which depends upon layer closer to output 
 	 * @param perceptron 
 	 */
-	public void calculateDeltaTerm(Perceptron perceptron, int num){
+	public void calculateDeltaTerm(Perceptron perceptron, int perceptronNumInLayer){
 		if(role == roles.HIDDEN){
-			this.delta = perceptron.getDeltaTerm() * perceptron.getWeight(num) * activation * (1 - activation);
+			this.delta = perceptron.getDeltaTerm() * 
+				(perceptron.getWeight(perceptronNumInLayer) *
+				 activation * (1 - activation));
 		}
 	}
 
 	public void calculateDeltaWeights(){
-		if(role == roles.OUTPUT){
-			deltaWeights.clear();	
-			for(int i = 0; i < weights.size(); i++){
-				deltaWeights.add(delta * inputs.get(i));
-			}
+		deltaWeights.clear();	
+		for(int i = 0; i < weights.size(); i++){
+			deltaWeights.add(delta * inputs.get(i).getActivation());
 		}
 	}
 
 	public void updateWeights(){
 		for(int i = 0; i < weights.size(); i++){
-			weights.set(i, weights.get(i) - deltaWeights.get(i));
+			double oldWeight = weights.get(i);
+			double delta = deltaWeights.get(i);
+			double newWeight = oldWeight - (learningRate * delta);
+			weights.set(i, newWeight);
 		}
+	}
+
+	public double getError(double targetValue){
+		return Math.pow((targetValue - activation),2.0)/2.0;
 	}
 
 	private double getWeight(int num) {
