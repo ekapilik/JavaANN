@@ -10,6 +10,7 @@ Assignment 4
 
 
 Implementation of simple ANN network.
+*for conceptual knowledge, not optimized*
 Trained and tested on logical gate data sets, such as AND, NAND, NOR, XNOR, etc.
 
 
