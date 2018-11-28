@@ -18,23 +18,24 @@ import java.util.logging.Logger;
 public class Layer {
 	private ArrayList<Perceptron> perceptrons;
 	private Layer previousLayer;
+	private Perceptron.roles role; //all perceptron roles in a single layer will be the same
 
-	Layer(int numberOfPerceptrons) {
+	Layer(int numberOfPerceptrons) { //input layer
+		role = Perceptron.roles.INPUT;
 		perceptrons = new ArrayList<Perceptron>();
 		for(int i = 0; i < numberOfPerceptrons; i++){
-			perceptrons.add(new Perceptron(1));
+			perceptrons.add(new Perceptron());//add input perceptron
 		}
 
 	}
 
-	Layer(int numberOfPerceptrons, Layer previousLayer){
+	Layer(int numberOfPerceptrons, Layer previousLayer, boolean isHidden){
+		this.role = (isHidden ? Perceptron.roles.HIDDEN : Perceptron.roles.OUTPUT);
 		perceptrons = new ArrayList<Perceptron>();
 		for(int i = 0; i < numberOfPerceptrons; i++){
-			perceptrons.add(new Perceptron(previousLayer.getNumPerceptrons()));
+			perceptrons.add(new Perceptron(previousLayer.getPerceptrons(), isHidden));
 		}
-
 		this.previousLayer = previousLayer;
-
 	}
 	
 	public int getNumPerceptrons(){ return perceptrons.size(); }
@@ -43,12 +44,12 @@ public class Layer {
 	public String toString(){
 		String result = "";
 		for(Perceptron p : perceptrons){
-			result += (p.isActivated()?1:0) + " ";
+			result += String.format("%1.2f ", p.getActivation());
 		}
 		return result;
 	}
 
-	void inputFeed(Boolean[] input){
+	void inputFeed(double[] input){
 		for(int i = 0; i < perceptrons.size(); i++){
 			((Perceptron)perceptrons.get(i)).setActivation(input[i]);
 		}
@@ -56,22 +57,46 @@ public class Layer {
 
 
 	void forwardFeed() {
-		Boolean[] inputs = previousLayer.getActivations();
 		for(Perceptron p : perceptrons){
 			try {
-				p.forwardFeed(inputs);
+				p.forwardFeed();
 			} catch (Exception ex) {
 				Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}
 
-	public Boolean[] getActivations() {
+	public double[] getActivations() {
 		int n = perceptrons.size();
-		Boolean[] activations = new Boolean[n];
+		double[] activations = new double[n];
 		for(int i = 0; i < n; i++){
-			activations[i] = perceptrons.get(i).isActivated();
+			activations[i] = perceptrons.get(i).getActivation();
 		}
 		return activations;
 	}
+
+	public ArrayList<Perceptron> getPerceptrons(){
+		return perceptrons;
+	}
+
+	public void calculateDeltaTerm(double[] targetOutputs){
+		if(role == Perceptron.roles.OUTPUT){
+			int  i = 0;
+			for(Perceptron p : perceptrons){
+				p.calculateDeltaTerm(targetOutputs[i++]);
+			}
+		}
+		else if(role == Perceptron.roles.HIDDEN){
+			
+		}
+	}
+
+	void calculateWeightUpdates() {
+		if(role == Perceptron.roles.OUTPUT){
+			for(Perceptron p :perceptrons){
+				p.calculateDeltaWeights();
+			}
+		}
+	}
+
 }

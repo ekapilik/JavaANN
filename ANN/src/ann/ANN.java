@@ -6,19 +6,22 @@ COMP3190 - Introduction to Artificial Intelligence
  */
 package ann;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Eric Kapilik
  */
 public class ANN {
-	static int[][][] trainingData;
+	static double[][][] trainingData;
 	static Network network;
 	/**
 	 * Driver for ANN (running, training)
 	 */
 	public static void main(String[] args) {
 		init();
+		test();
 
 		System.out.println("Would you like to:"
 			+ "\n[1] get predictions"
@@ -34,21 +37,35 @@ public class ANN {
 				break;
 			case 2:
 				System.out.println("Training the model...");
+				network.train(trainingData);
 				break;
 		}
 	}
 
 	private static void init() {
 		//simple logical AND truth table
-		trainingData = new int[][][] {	{{0,0},{0}}, 
-						{{0,1},{0}},
-						{{1,0},{0}}, 
-						{{1,1},{1}} };
-		network = new Network(0.07, 1000000, new int[] {2,3,3,1});
+		trainingData = new double[][][] {{{0.0,0.0},{0.0}}, 
+						 {{0.0,1.0},{0.0}},
+						 {{1.0,0.0},{0.0}}, 
+						 {{1.0,1.0},{1.0}} };
+
+		network = new Network(0.07, 1000, new int[] {2,3,1});
 		System.out.println(network + "\n");
-		Boolean[] test = new Boolean[] {false, true};
-		network.ForwardPropogation(test);
-		System.out.println(network + "\n");
+		
 	}
+	 private static void test(){
+		double[] test_inputs = new double[] {0.0, 1.0};
+		double[] test_output = new double[] {1.0};
+
+		network.forwardPropogation(test_inputs);
+		System.out.println(network + "\n");
+		try {
+			network.backPropogation(test_output);
+		} catch (Exception ex) {
+			Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		network.forwardPropogation(test_inputs);
+		System.out.println(network + "\n");
+	 }
 	
 }
