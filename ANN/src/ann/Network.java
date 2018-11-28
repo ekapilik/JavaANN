@@ -19,7 +19,7 @@ public class Network {
 	private int numIterations;
 
 	private Layer input;
-	private ArrayList<Layer> hidden;
+	private Layer hidden;
 	private Layer output;
 
 	/**
@@ -32,39 +32,18 @@ public class Network {
 		this.learningRate = learningRate;
 		this.numIterations = maxIterations;
 
-		//layers[0] is raw data input
 		input = new Layer(configuration[0]);
 
-		//in between configuration numbers are hidden layers
-		hidden = new ArrayList<Layer>();
-		int i = 1;
-		for(; i < configuration.length - 1; i++){
-			if(i == 1){
-				hidden.add(new Layer(configuration[i], input, Perceptron.roles.HIDDEN));
-			}
-			else{
-				hidden.add(new Layer(configuration[i], hidden.get(i - 2), Perceptron.roles.HIDDEN));
-			}
-		}
+		hidden = new Layer(configuration[1], input, true);
 
-		//layers[n] is output layer
-		output = new Layer(configuration[i], hidden.get(i - 2), Perceptron.roles.OUTPUT);
+		output = new Layer(configuration[2], hidden, false);
 	}
 
 	public String toString(){
 		String result = "[learningRate: " + learningRate + ", maxIterations: " + numIterations + "]";
-		result += "\nINPUT:     ";
-		result += input.toString();
-
-
-		for(int i = 0; i < hidden.size(); i++){
-			result += "\nHIDDEN[" + i + "]: ";
-			result += hidden.get(i).toString();
-		}
-
-		result += "\nOUTPUT:    ";
-		result += output.toString();
-
+		result += "\nINPUT:  " + input.toString();
+		result += "\nHIDDEN: " + hidden.toString();
+		result += "\nOUTPUT: " + output.toString();
 		return result;
 	}
 
@@ -82,9 +61,7 @@ public class Network {
 
 	public void forwardPropogation(double[] inputs){
 		input.inputFeed(inputs);
-		for(Layer l : hidden){
-			l.forwardFeed();
-		}
+		hidden.forwardFeed();
 		output.forwardFeed();
 	}
 

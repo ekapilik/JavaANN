@@ -18,9 +18,10 @@ public class Perceptron {
 
 	public enum roles {INPUT, HIDDEN, OUTPUT};
 
+	final double learningRate = 3.0;	
 	private roles role;
 	private ArrayList<Double> weights;
-	private ArrayList<Double> inputs;
+	private ArrayList<Perceptron> inputs;
 	private ArrayList<Double> deltaWeights; //weights not updated by deltaWeights until .updateWeights() is run
 	private double delta;
 	private Double activation;
@@ -32,34 +33,31 @@ public class Perceptron {
 	 * 
 	 * @param numInputs  number of inputs (not including bias term)
 	 */
-	public Perceptron(int numInputs, roles role){
-		this.role = role;
+	public Perceptron(){
+		this.role = roles.INPUT;
+
+		activation = 0.0;
+		bias = Math.random();
+	}
+
+	public Perceptron(ArrayList<Perceptron> inputs, boolean isHidden){
+		this.role = (isHidden ? roles.HIDDEN : roles.OUTPUT);
+
+		this.inputs = inputs;
 
 		weights = new ArrayList<Double>();
-		inputs = new ArrayList<Double>();
+		for(int i = 0; i < inputs.size(); i++){ weights.add(Math.random()); }
 		deltaWeights = new ArrayList<Double>();
 		activation = 0.0;
 		bias = Math.random();
-
-		//initialize random weight values
-		for(int i = 0; i < numInputs; i++){//for each input
-			weights.add(Math.random());
-		}//end for
-
 	}
 
-	public void forwardFeed(double[] inputs) throws Exception{
-		if(inputs.length != weights.size()){
-			throw new Exception("Incorrect number of inputs. Expected: " + weights.size());
-		}
-
-		this.inputs = new ArrayList<Double>();
-
+	public void forwardFeed() {
 		//sum of weights times activations
 		double sum = 0;
-		for (int i = 0; i < inputs.length; i++){
-			this.inputs.add(inputs[i]);
-			sum += weights.get(i) * inputs[i];
+		int i = 0;
+		for(Perceptron in : inputs){
+			sum += weights.get(i++) * in.getActivation();
 		}
 
 		this.net = sum + bias;

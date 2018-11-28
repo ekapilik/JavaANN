@@ -20,20 +20,20 @@ public class Layer {
 	private Layer previousLayer;
 	private Perceptron.roles role; //all perceptron roles in a single layer will be the same
 
-	Layer(int numberOfPerceptrons) {
+	Layer(int numberOfPerceptrons) { //input layer
 		role = Perceptron.roles.INPUT;
 		perceptrons = new ArrayList<Perceptron>();
 		for(int i = 0; i < numberOfPerceptrons; i++){
-			perceptrons.add(new Perceptron(1, Perceptron.roles.INPUT));
+			perceptrons.add(new Perceptron());//add input perceptron
 		}
 
 	}
 
-	Layer(int numberOfPerceptrons, Layer previousLayer, Perceptron.roles role){
-		this.role = role;
+	Layer(int numberOfPerceptrons, Layer previousLayer, boolean isHidden){
+		this.role = (isHidden ? Perceptron.roles.HIDDEN : Perceptron.roles.OUTPUT);
 		perceptrons = new ArrayList<Perceptron>();
 		for(int i = 0; i < numberOfPerceptrons; i++){
-			perceptrons.add(new Perceptron(previousLayer.getNumPerceptrons(), role));
+			perceptrons.add(new Perceptron(previousLayer.getPerceptrons(), isHidden));
 		}
 		this.previousLayer = previousLayer;
 	}
@@ -57,10 +57,9 @@ public class Layer {
 
 
 	void forwardFeed() {
-		double[] inputs = previousLayer.getActivations();
 		for(Perceptron p : perceptrons){
 			try {
-				p.forwardFeed(inputs);
+				p.forwardFeed();
 			} catch (Exception ex) {
 				Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -76,6 +75,10 @@ public class Layer {
 		return activations;
 	}
 
+	public ArrayList<Perceptron> getPerceptrons(){
+		return perceptrons;
+	}
+
 	public void calculateDeltaTerm(double[] targetOutputs){
 		if(role == Perceptron.roles.OUTPUT){
 			int  i = 0;
@@ -83,14 +86,17 @@ public class Layer {
 				p.calculateDeltaTerm(targetOutputs[i++]);
 			}
 		}
+		else if(role == Perceptron.roles.HIDDEN){
+			
+		}
 	}
 
 	void calculateWeightUpdates() {
 		if(role == Perceptron.roles.OUTPUT){
-			int  i = 0;
 			for(Perceptron p :perceptrons){
 				p.calculateDeltaWeights();
 			}
 		}
 	}
+
 }
