@@ -11,3 +11,9 @@ Assignment 4
 
 Implementation of simple ANN network.
 Trained and tested on logical gate data sets, such as AND, NAND, NOR, XNOR, etc.
+
+
+
+Resources
+=====================
+http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial
