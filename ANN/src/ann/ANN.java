@@ -6,6 +6,8 @@ COMP3190 - Introduction to Artificial Intelligence
  */
 package ann;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,6 +21,7 @@ public class ANN {
 	 */
 	public static void main(String[] args) {
 		init();
+		test();
 
 		System.out.println("Would you like to:"
 			+ "\n[1] get predictions"
@@ -46,15 +49,23 @@ public class ANN {
 						 {{1.0,0.0},{0.0}}, 
 						 {{1.0,1.0},{1.0}} };
 
-
 		network = new Network(0.07, 1000, new int[] {2,3,1});
 		System.out.println(network + "\n");
+		
+	}
+	 private static void test(){
 		double[] test_inputs = new double[] {0.0, 1.0};
 		double[] test_output = new double[] {1.0};
 
 		network.forwardPropogation(test_inputs);
 		System.out.println(network + "\n");
-		network.backPropogation(test_output);
-	}
+		try {
+			network.backPropogation(test_output);
+		} catch (Exception ex) {
+			Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		network.forwardPropogation(test_inputs);
+		System.out.println(network + "\n");
+	 }
 	
 }
