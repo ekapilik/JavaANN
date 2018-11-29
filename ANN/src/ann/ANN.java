@@ -14,14 +14,13 @@ import java.util.logging.Logger;
  * @author Eric Kapilik
  */
 public class ANN {
-	static double[][][] trainingData;
+	static Data data; 
 	static Network network;
 	/**
 	 * Driver for ANN (running, training)
 	 */
 	public static void main(String[] args) {
 		init();
-		test();
 
 		System.out.println("Would you like to:"
 			+ "\n[1] get predictions"
@@ -37,35 +36,21 @@ public class ANN {
 				break;
 			case 2:
 				System.out.println("Training the model...");
-				network.train(trainingData);
+				network.train(data);
 				break;
 		}
 	}
 
 	private static void init() {
 		//simple logical AND truth table
-		trainingData = new double[][][] {{{0.0,0.0},{0.0}}, 
-						 {{0.0,1.0},{0.0}},
-						 {{1.0,0.0},{0.0}}, 
-						 {{1.0,1.0},{1.0}} };
-
 		network = new Network(0.07, 1000, new int[] {2,3,1});
+		System.out.println("Initial Structure of ANN");
 		System.out.println(network + "\n");
-		
-	}
-	 private static void test(){
-		double[] test_inputs = new double[] {0.0, 1.0};
-		double[] test_output = new double[] {1.0};
 
-		network.forwardPropogation(test_inputs);
-		System.out.println(network + "\n");
-		try {
-			network.backPropogation(test_output);
-		} catch (Exception ex) {
-			Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		network.forwardPropogation(test_inputs);
-		System.out.println(network + "\n");
-	 }
-	
+		data = new Data();
+		data.add(new Row(new double[] {0.0,0.0}, new double[] {0.0}));
+		data.add(new Row(new double[] {0.0,1.0}, new double[] {0.0}));
+		data.add(new Row(new double[] {1.0,0.0}, new double[] {0.0}));
+		data.add(new Row(new double[] {1.0,1.0}, new double[] {1.0}));
+	}
 }

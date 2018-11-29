@@ -3,6 +3,10 @@ package ann;
 
 import ann.Layer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +20,7 @@ import java.util.ArrayList;
  */
 public class Network {
 	private double learningRate;
-	private int numIterations;
+	private int maxIterations;
 
 	private Layer input;
 	private Layer hidden;
@@ -30,7 +34,7 @@ public class Network {
 	 */
 	public Network(double learningRate, int maxIterations, int[] configuration){
 		this.learningRate = learningRate;
-		this.numIterations = maxIterations;
+		this.maxIterations = maxIterations;
 
 		input = new Layer(configuration[0]);
 
@@ -40,7 +44,7 @@ public class Network {
 	}
 
 	public String toString(){
-		String result = "[learningRate: " + learningRate + ", maxIterations: " + numIterations + "]";
+		String result = "[learningRate: " + learningRate + ", maxIterations: " + maxIterations + "]";
 		result += "\nINPUT:  " + input.toString();
 		result += "\nHIDDEN: " + hidden.toString();
 		result += "\nOUTPUT: " + output.toString();
