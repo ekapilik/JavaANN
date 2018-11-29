@@ -51,14 +51,26 @@ public class Network {
 		return result;
 	}
 
-	void train(double[][][] trainingData) {
-		//ArrayList<Double> errorPerIteration = new ArrayList<Double>();
-		//for (int i = 0; i < maxIterations; i++){	
-			//shuffle data rows
-			//foreach training row
-				//forwardPropogation()
-				//errorPerIteration += backPropogation();
-		//}
+	void train(Data data) {
+		ArrayList<Double> errorPerIteration = new ArrayList<Double>();
+
+		for (int i = 0; i < maxIterations; i++){	
+			double error = 0.0;
+			Data shuffled = data.shuffle();
+			for(Row r : shuffled.getRows()){
+				forwardPropogation(r.getInputs());
+				try {
+					error = backPropogation(r.getOutputs());
+					errorPerIteration.add(error);
+				} catch (Exception ex) {
+					Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				forwardPropogation(r.getInputs());
+			}
+
+			System.out.println("Error: " + error + "\n" + this + "\n");
+		}
+
 		//graph errorPerIteration
 		//http://www.jfree.org/jfreechart/
 	}
