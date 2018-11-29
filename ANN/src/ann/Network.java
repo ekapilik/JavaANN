@@ -143,6 +143,8 @@ public class Network {
 		}
 
 		System.out.println(buffer + "|");
+		
+		double totalError = 0.0;
 
 		for(Row r : rows){
 			buffer = "";
@@ -163,7 +165,13 @@ public class Network {
 				buffer += String.format("|  %2.3f ", ANN[i]);
 			}
 
+			for(int i = 0; i < outputs.length; i++){
+				totalError += Math.pow((outputs[i] - ANN[i]),2.0)/2.0;
+			}
+
 			System.out.println(buffer + "|");
 		}
+
+		System.out.println("Total Error: " + totalError);
 	}
 }
