@@ -83,9 +83,9 @@ public class ANN {
 	}
 
 	private static void init() {
-		//simple logical AND truth table
 		network = new Network(learningRate, maxIterations, new int[] {2,hidden,1});
 
+		//simple logical XOR truth table
 		data = new Data();
 		data.add(new Row(new double[] {0.0,0.0}, new double[] {0.0}));
 		data.add(new Row(new double[] {0.0,1.0}, new double[] {1.0}));
