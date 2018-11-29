@@ -103,7 +103,7 @@ public class Network {
 		for(Perceptron o : this.output.getPerceptrons()){
 			o.updateWeights();
 		}
-		for(Perceptron h : this.output.getPerceptrons()){
+		for(Perceptron h : this.hidden.getPerceptrons()){
 			h.updateWeights();
 		}
 

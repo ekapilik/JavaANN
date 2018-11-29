@@ -18,7 +18,7 @@ public class Perceptron {
 
 	public enum roles {INPUT, HIDDEN, OUTPUT};
 
-	final double learningRate = 3.0;	
+	final double learningRate = 1.0;	
 	private roles role;
 	private ArrayList<Double> weights;
 	private ArrayList<Perceptron> inputs;
@@ -85,7 +85,7 @@ public class Perceptron {
 	 */
 	public void calculateDeltaTerm(double targetOutput) {
 		if(role == roles.OUTPUT){
-			this.delta = (targetOutput - activation) * (activation) * (1 - activation);
+			this.delta = (activation - targetOutput) * (activation) * (1 - activation);
 		}
 	}
 
