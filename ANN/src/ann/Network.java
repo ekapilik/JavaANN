@@ -125,4 +125,45 @@ public class Network {
 
 		return totalError;
 	}
+
+	void getResults(Data data) {
+		ArrayList<Row> rows = data.getRows();
+
+		String buffer = "";
+		for(int i = 0; i < rows.get(0).getInputs().length; i++){
+			buffer += String.format("|  IN[%d] ",i);
+		}
+
+		for(int i = 0; i < rows.get(0).getOutputs().length; i++){
+			buffer += String.format("| OUT[%d] ",i);
+		}
+
+		for(int i = 0; i < rows.get(0).getOutputs().length; i++){
+			buffer += String.format("| ANN[%d] ",i);
+		}
+
+		System.out.println(buffer + "|");
+
+		for(Row r : rows){
+			buffer = "";
+
+			double[] inputs = r.getInputs();
+			for(int i = 0; i < inputs.length; i++){
+				buffer += String.format("|  %2.3f ", inputs[i]);
+			}
+			
+			double[] outputs = r.getOutputs();
+			for(int i = 0; i < outputs.length; i++){
+				buffer += String.format("|  %2.3f ", outputs[i]);
+			}
+
+			this.forwardPropogation(inputs);
+			double[] ANN = output.getActivations();
+			for(int i = 0; i < ANN.length; i++){
+				buffer += String.format("|  %2.3f ", ANN[i]);
+			}
+
+			System.out.println(buffer + "|");
+		}
+	}
 }

@@ -22,22 +22,30 @@ public class ANN {
 	public static void main(String[] args) {
 		init();
 
-		System.out.println("Would you like to:"
-			+ "\n[1] get predictions"
-			+ "\n[2] train the ANN");
-
+		
 		Scanner reader = new Scanner(System.in); //read from System.in
-		int opt = reader.nextInt(); //scan for next int
-		reader.close();
+		while(true){
+			System.out.println("\n\nWould you like to:"
+				+ "\n[1] get predictions"
+				+ "\n[2] train the ANN"
+				+ "\n[3] reset ANN");
 
-		switch(opt){
-			case 1:
-				System.out.println("Getting predictions from model...");
-				break;
-			case 2:
-				System.out.println("Training the model...");
-				network.train(data);
-				break;
+			int opt = reader.nextInt(); //scan for next int
+
+			switch(opt){
+				case 1:
+					System.out.println("Getting predictions from model...");
+					network.getResults(data);
+					break;
+				case 2:
+					System.out.println("Training the model...");
+					network.train(data);
+					break;
+				case 3:
+					System.out.println("Destroying previous model and starting fresh...");
+					init();
+					break;
+			}
 		}
 	}
 
