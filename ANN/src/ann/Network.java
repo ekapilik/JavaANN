@@ -3,6 +3,10 @@ package ann;
 
 import ann.Layer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +20,7 @@ import java.util.ArrayList;
  */
 public class Network {
 	private double learningRate;
-	private int numIterations;
+	private int maxIterations;
 
 	private Layer input;
 	private Layer hidden;
@@ -30,7 +34,7 @@ public class Network {
 	 */
 	public Network(double learningRate, int maxIterations, int[] configuration){
 		this.learningRate = learningRate;
-		this.numIterations = maxIterations;
+		this.maxIterations = maxIterations;
 
 		input = new Layer(configuration[0]);
 
@@ -40,21 +44,33 @@ public class Network {
 	}
 
 	public String toString(){
-		String result = "[learningRate: " + learningRate + ", maxIterations: " + numIterations + "]";
+		String result = "[learningRate: " + learningRate + ", maxIterations: " + maxIterations + "]";
 		result += "\nINPUT:  " + input.toString();
 		result += "\nHIDDEN: " + hidden.toString();
 		result += "\nOUTPUT: " + output.toString();
 		return result;
 	}
 
-	void train(double[][][] trainingData) {
-		//ArrayList<Double> errorPerIteration = new ArrayList<Double>();
-		//for (int i = 0; i < maxIterations; i++){	
-			//shuffle data rows
-			//foreach training row
-				//forwardPropogation()
-				//errorPerIteration += backPropogation();
-		//}
+	void train(Data data) {
+		ArrayList<Double> errorPerIteration = new ArrayList<Double>();
+
+		for (int i = 0; i < maxIterations; i++){	
+			double error = 0.0;
+			Data shuffled = data.shuffle();
+			for(Row r : shuffled.getRows()){
+				forwardPropogation(r.getInputs());
+				try {
+					error = backPropogation(r.getOutputs(), learningRate);
+					errorPerIteration.add(error);
+				} catch (Exception ex) {
+					Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				forwardPropogation(r.getInputs());
+			}
+
+			System.out.println("Error: " + error + "\n" + this + "\n");
+		}
+
 		//graph errorPerIteration
 		//http://www.jfree.org/jfreechart/
 	}
@@ -65,7 +81,7 @@ public class Network {
 		output.forwardFeed();
 	}
 
-	public double backPropogation(double[] targetOutputs) throws Exception {
+	public double backPropogation(double[] targetOutputs, double learningRate) throws Exception {
 		//ERROR
 		//calculate total error
 			//foreach output perceptron
@@ -101,12 +117,61 @@ public class Network {
 		}
 
 		for(Perceptron o : this.output.getPerceptrons()){
-			o.updateWeights();
+			o.updateWeights(learningRate);
 		}
-		for(Perceptron h : this.output.getPerceptrons()){
-			h.updateWeights();
+		for(Perceptron h : this.hidden.getPerceptrons()){
+			h.updateWeights(learningRate);
 		}
 
 		return totalError;
+	}
+
+	void getResults(Data data) {
+		ArrayList<Row> rows = data.getRows();
+
+		String buffer = "";
+		for(int i = 0; i < rows.get(0).getInputs().length; i++){
+			buffer += String.format("|  IN[%d] ",i);
+		}
+
+		for(int i = 0; i < rows.get(0).getOutputs().length; i++){
+			buffer += String.format("| OUT[%d] ",i);
+		}
+
+		for(int i = 0; i < rows.get(0).getOutputs().length; i++){
+			buffer += String.format("| ANN[%d] ",i);
+		}
+
+		System.out.println(buffer + "|");
+		
+		double totalError = 0.0;
+
+		for(Row r : rows){
+			buffer = "";
+
+			double[] inputs = r.getInputs();
+			for(int i = 0; i < inputs.length; i++){
+				buffer += String.format("|  %2.3f ", inputs[i]);
+			}
+			
+			double[] outputs = r.getOutputs();
+			for(int i = 0; i < outputs.length; i++){
+				buffer += String.format("|  %2.3f ", outputs[i]);
+			}
+
+			this.forwardPropogation(inputs);
+			double[] ANN = output.getActivations();
+			for(int i = 0; i < ANN.length; i++){
+				buffer += String.format("|  %2.3f ", ANN[i]);
+			}
+
+			for(int i = 0; i < outputs.length; i++){
+				totalError += Math.pow((outputs[i] - ANN[i]),2.0)/2.0;
+			}
+
+			System.out.println(buffer + "|");
+		}
+
+		System.out.println("Total Error: " + totalError);
 	}
 }

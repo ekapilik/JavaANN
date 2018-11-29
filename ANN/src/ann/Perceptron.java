@@ -18,7 +18,6 @@ public class Perceptron {
 
 	public enum roles {INPUT, HIDDEN, OUTPUT};
 
-	final double learningRate = 3.0;	
 	private roles role;
 	private ArrayList<Double> weights;
 	private ArrayList<Perceptron> inputs;
@@ -85,7 +84,7 @@ public class Perceptron {
 	 */
 	public void calculateDeltaTerm(double targetOutput) {
 		if(role == roles.OUTPUT){
-			this.delta = (targetOutput - activation) * (activation) * (1 - activation);
+			this.delta = (activation - targetOutput) * (activation) * (1 - activation);
 		}
 	}
 
@@ -108,7 +107,7 @@ public class Perceptron {
 		}
 	}
 
-	public void updateWeights(){
+	public void updateWeights(double learningRate){
 		for(int i = 0; i < weights.size(); i++){
 			double oldWeight = weights.get(i);
 			double delta = deltaWeights.get(i);
