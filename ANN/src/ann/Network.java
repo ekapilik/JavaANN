@@ -60,7 +60,7 @@ public class Network {
 			for(Row r : shuffled.getRows()){
 				forwardPropogation(r.getInputs());
 				try {
-					error = backPropogation(r.getOutputs());
+					error = backPropogation(r.getOutputs(), learningRate);
 					errorPerIteration.add(error);
 				} catch (Exception ex) {
 					Logger.getLogger(ANN.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,7 +81,7 @@ public class Network {
 		output.forwardFeed();
 	}
 
-	public double backPropogation(double[] targetOutputs) throws Exception {
+	public double backPropogation(double[] targetOutputs, double learningRate) throws Exception {
 		//ERROR
 		//calculate total error
 			//foreach output perceptron
@@ -117,10 +117,10 @@ public class Network {
 		}
 
 		for(Perceptron o : this.output.getPerceptrons()){
-			o.updateWeights();
+			o.updateWeights(learningRate);
 		}
 		for(Perceptron h : this.hidden.getPerceptrons()){
-			h.updateWeights();
+			h.updateWeights(learningRate);
 		}
 
 		return totalError;

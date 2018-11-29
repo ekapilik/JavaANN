@@ -18,7 +18,6 @@ public class Perceptron {
 
 	public enum roles {INPUT, HIDDEN, OUTPUT};
 
-	final double learningRate = 1.0;	
 	private roles role;
 	private ArrayList<Double> weights;
 	private ArrayList<Perceptron> inputs;
@@ -108,7 +107,7 @@ public class Perceptron {
 		}
 	}
 
-	public void updateWeights(){
+	public void updateWeights(double learningRate){
 		for(int i = 0; i < weights.size(); i++){
 			double oldWeight = weights.get(i);
 			double delta = deltaWeights.get(i);
