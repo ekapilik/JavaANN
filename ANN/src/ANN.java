@@ -4,7 +4,6 @@ COMP3190 - Introduction to Artificial Intelligence
 @author: Eric Kapilik
 
  */
-package ann;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
