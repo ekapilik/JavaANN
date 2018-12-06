@@ -20,6 +20,8 @@ public class ANN {
 	static double learningRate = 1.0;
 	static int maxIterations = 1000;
 	static int hidden = 3;
+
+	static int dataSet = 1;
 	/**
 	 * Driver for ANN (running, training)
 	 */
@@ -38,6 +40,7 @@ public class ANN {
 				+ "\n\t[2] Train ANN"
 				+ "\n\t[3] Reset ANN's weights and biases"
 				+ "\n\t[4] Tune ANN"
+				+ "\n\t[5] Change training data set"
 				+ "\n\t[5] Quit");
 			System.out.println("========================================");
 
@@ -70,6 +73,13 @@ public class ANN {
 					init();
 					break;
 				case 5:
+					System.out.println("[1] XOR"
+						+ "\n[2] sin(x)"
+						+ "\n[3] Normal Distribution");
+					dataSet = reader.nextInt(); //scan for next int
+					init();
+					break;
+				case 6:
 					System.exit(1);
 			}
 			System.out.println("\nPress [enter] to continue...");
@@ -82,13 +92,47 @@ public class ANN {
 	}
 
 	private static void init() {
-		network = new Network(learningRate, maxIterations, new int[] {2,hidden,1});
+		loadData();
+		int numInputs = data.getRow(0).getInputs().length;
+		network = new Network(learningRate, maxIterations, new int[] {numInputs,hidden,1});
+	}
 
+	private static void loadData(){
 		//simple logical XOR truth table
 		data = new Data();
-		data.add(new Row(new double[] {0.0,0.0}, new double[] {0.0}));
-		data.add(new Row(new double[] {0.0,1.0}, new double[] {1.0}));
-		data.add(new Row(new double[] {1.0,0.0}, new double[] {1.0}));
-		data.add(new Row(new double[] {1.0,1.0}, new double[] {0.0}));
+		switch(dataSet){
+			case 1://XOR
+				data.add(new Row(new double[] {0.0,0.0}, new double[] {0.0}));
+				data.add(new Row(new double[] {0.0,1.0}, new double[] {1.0}));
+				data.add(new Row(new double[] {1.0,0.0}, new double[] {1.0}));
+				data.add(new Row(new double[] {1.0,1.0}, new double[] {0.0}));
+				break;
+			case 2://sin(x)
+				double x1 = 0;
+				int divisions = 18;
+				for(int i = 1; i < 17; i ++){
+					data.add(new Row(new double[] {x1}, new double[] {Math.sin(x1)}) );
+					x1 += 2*Math.PI/divisions;
+				}
+				break;
+			case 3://normal distribution
+				for(double x = -3.0; x < 3.1; x += 0.1){
+					data.add(new Row(new double[] {x}, new double[] {normalDist(x)}) );
+				}
+				break;
+			default:
+				data.add(new Row(new double[] {0.0,0.0}, new double[] {0.0}));
+				data.add(new Row(new double[] {0.0,1.0}, new double[] {1.0}));
+				data.add(new Row(new double[] {1.0,0.0}, new double[] {1.0}));
+				data.add(new Row(new double[] {1.0,1.0}, new double[] {0.0}));
+				break;
+		}
+	
+	}
+
+	private static double normalCoeff = (1.0/Math.sqrt(2.0 * Math.PI));
+	private static double normalDist(double x){
+		//simple normal distribution with mean 0 and standard deviation 1
+		return normalCoeff * Math.exp(-(x * x)/(2.0));
 	}
 }
