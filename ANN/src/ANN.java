@@ -41,7 +41,7 @@ public class ANN {
 				+ "\n\t[3] Reset ANN's weights and biases"
 				+ "\n\t[4] Tune ANN"
 				+ "\n\t[5] Change training data set"
-				+ "\n\t[5] Quit");
+				+ "\n\t[6] Quit");
 			System.out.println("========================================");
 
 			int opt = reader.nextInt(); //scan for next int
@@ -81,6 +81,9 @@ public class ANN {
 					break;
 				case 6:
 					System.exit(1);
+					break;
+				default:
+					break;
 			}
 			System.out.println("\nPress [enter] to continue...");
 			try {
