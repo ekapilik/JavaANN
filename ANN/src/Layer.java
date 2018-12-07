@@ -16,7 +16,6 @@ import java.util.logging.Logger;
  */
 public class Layer {
 	private ArrayList<Perceptron> perceptrons;
-	private Layer previousLayer;
 	private Perceptron.roles role; //all perceptron roles in a single layer will be the same
 
 	Layer(int numberOfPerceptrons) { //input layer
@@ -34,7 +33,6 @@ public class Layer {
 		for(int i = 0; i < numberOfPerceptrons; i++){
 			perceptrons.add(new Perceptron(previousLayer.getPerceptrons(), isHidden));
 		}
-		this.previousLayer = previousLayer;
 	}
 	
 	public int getNumPerceptrons(){ return perceptrons.size(); }
@@ -78,7 +76,7 @@ public class Layer {
 		return perceptrons;
 	}
 
-	public void calculateDeltaTerm(double[] targetOutputs){
+	public void calculateDeltaTerms(double[] targetOutputs){
 		if(role == Perceptron.roles.OUTPUT){
 			int  i = 0;
 			for(Perceptron p : perceptrons){

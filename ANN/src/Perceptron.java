@@ -43,9 +43,11 @@ public class Perceptron {
 
 		this.inputs = inputs;
 
-		weights = new ArrayList<Double>();
-		for(int i = 0; i < inputs.size(); i++){ weights.add(Math.random()); }
-		deltaWeights = new ArrayList<Double>();
+		weights = new ArrayList<>();
+		for (Perceptron input : inputs) {
+			weights.add(Math.random());
+		}
+		deltaWeights = new ArrayList<>();
 		activation = 0.0;
 		bias = Math.random();
 	}
@@ -99,6 +101,8 @@ public class Perceptron {
 		}
 	}
 
+	//does not actually change delta values! only calculates how much they
+	//will change by when backpropagation calculations is complete
 	public void calculateDeltaWeights(){
 		deltaWeights.clear();	
 		for(int i = 0; i < weights.size(); i++){
@@ -106,6 +110,7 @@ public class Perceptron {
 		}
 	}
 
+	//actually updates the weights after calculations are complete
 	public void updateWeights(double learningRate){
 		for(int i = 0; i < weights.size(); i++){
 			double oldWeight = weights.get(i);
